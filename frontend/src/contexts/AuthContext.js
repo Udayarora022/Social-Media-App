@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect } from "react"
-import { authAPI, userAPI } from "../services/api"
+import { authService } from "../services/auth.js"
 
 const AuthContext = createContext()
 
@@ -18,74 +18,49 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const token = localStorage.getItem("token")
-    if (token) {
-      fetchProfile()
-    } else {
-      setLoading(false)
-    }
+    initializeAuth()
   }, [])
 
-  const fetchProfile = async () => {
+  const initializeAuth = async () => {
     try {
-      const response = await userAPI.getProfile()
-      setUser(response.data.user)
+      const result = await authService.getCurrentUser()
+      if (result.success) {
+        setUser(result.user)
+      }
     } catch (error) {
-      console.error("Error fetching profile:", error)
-      localStorage.removeItem("token")
+      console.error("Auth initialization error:", error)
     } finally {
       setLoading(false)
     }
   }
 
   const login = async (email, password) => {
-    try {
-      const response = await authAPI.login({ email, password })
-      const { token, user } = response.data
-
-      localStorage.setItem("token", token)
-      setUser(user)
-      return { success: true }
-    } catch (error) {
-      return {
-        success: false,
-        error: error.response?.data?.error || "Login failed",
-      }
+    const result = await authService.login(email, password)
+    if (result.success) {
+      setUser(result.user)
     }
+    return result
   }
 
   const signup = async (name, email, password) => {
-    try {
-      const response = await authAPI.signup({ name, email, password })
-      const { token, user } = response.data
-
-      localStorage.setItem("token", token)
-      setUser(user)
-      return { success: true }
-    } catch (error) {
-      return {
-        success: false,
-        error: error.response?.data?.error || "Signup failed",
-      }
+    const result = await authService.signup(name, email, password)
+    if (result.success) {
+      setUser(result.user)
     }
+    return result
   }
 
   const logout = () => {
-    localStorage.removeItem("token")
+    authService.logout()
     setUser(null)
   }
 
   const updateProfile = async (profileData) => {
-    try {
-      const response = await userAPI.updateProfile(profileData)
-      setUser(response.data.user)
-      return { success: true }
-    } catch (error) {
-      return {
-        success: false,
-        error: error.response?.data?.error || "Update failed",
-      }
+    const result = await authService.updateProfile(profileData)
+    if (result.success) {
+      setUser(result.user)
     }
+    return result
   }
 
   const value = {
