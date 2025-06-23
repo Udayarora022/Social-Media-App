@@ -2,9 +2,11 @@
 
 import { useState } from "react"
 import { useAuth } from "../contexts/AuthContext"
+import { Eye, EyeOff, Mail, User, Lock } from "lucide-react"
 
 export default function AuthForm() {
   const [isLogin, setIsLogin] = useState(true)
+  const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -46,76 +48,110 @@ export default function AuthForm() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            {isLogin ? "Sign in to your account" : "Create your account"}
-          </h2>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-pink-600 to-blue-600 animate-gradient py-12 px-4 sm:px-6 lg:px-8">
+      {/* Floating background elements */}
+      <div className="fixed top-10 left-10 w-32 h-32 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full opacity-10 animate-float"></div>
+      <div className="fixed top-20 right-20 w-24 h-24 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-full opacity-10 animate-float" style={{animationDelay: '2s'}}></div>
+      <div className="fixed bottom-20 left-1/3 w-20 h-20 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full opacity-10 animate-float" style={{animationDelay: '4s'}}></div>
+      
+      <div className="max-w-md w-full space-y-8 animate-scale-in">
+        <div className="glass rounded-3xl p-8 shadow-2xl">
+          <div className="text-center mb-8">
+            <div className="mx-auto w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-4 animate-pulse-glow">
+              <span className="text-2xl font-bold text-white">S</span>
+            </div>
+            <h2 className="text-3xl font-bold text-white mb-2">
+              {isLogin ? "Welcome Back!" : "Join SocialApp"}
+            </h2>
+            <p className="text-purple-100">
+              {isLogin ? "Sign in to continue your journey" : "Create your account and start connecting"}
+            </p>
+          </div>
+
+          <form className="space-y-6" onSubmit={handleSubmit}>
             {!isLogin && (
-              <div>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-300 w-5 h-5" />
                 <input
                   name="name"
                   type="text"
                   required
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  className="form-input w-full pl-10 pr-4 py-3 rounded-xl text-gray-800 placeholder-gray-500 focus:outline-none"
                   placeholder="Full name"
                   value={formData.name}
                   onChange={handleChange}
                 />
               </div>
             )}
-            <div>
+
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-300 w-5 h-5" />
               <input
                 name="email"
                 type="email"
                 required
-                className={`appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 ${
-                  isLogin ? "rounded-t-md" : ""
-                } focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
+                className="form-input w-full pl-10 pr-4 py-3 rounded-xl text-gray-800 placeholder-gray-500 focus:outline-none"
                 placeholder="Email address"
                 value={formData.email}
                 onChange={handleChange}
               />
             </div>
-            <div>
+
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-300 w-5 h-5" />
               <input
                 name="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="form-input w-full pl-10 pr-12 py-3 rounded-xl text-gray-800 placeholder-gray-500 focus:outline-none"
                 placeholder="Password"
                 value={formData.password}
                 onChange={handleChange}
               />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-purple-400 hover:text-purple-600 transition-colors"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
             </div>
-          </div>
 
-          {error && <div className="text-red-600 text-sm text-center">{error}</div>}
+            {error && (
+              <div className="bg-red-500/20 border border-red-500/30 rounded-xl p-3 animate-slide-in-up">
+                <div className="text-red-100 text-sm text-center">{error}</div>
+              </div>
+            )}
 
-          <div>
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+              className="btn-gradient w-full py-3 px-6 rounded-xl text-white font-semibold text-lg shadow-lg hover-lift disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? "Loading..." : isLogin ? "Sign in" : "Sign up"}
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <div className="spinner w-5 h-5 mr-2"></div>
+                  Processing...
+                </div>
+              ) : (
+                isLogin ? "Sign In" : "Create Account"
+              )}
             </button>
-          </div>
+          </form>
 
-          <div className="text-center">
+          <div className="mt-6 text-center">
             <button
               type="button"
-              className="text-indigo-600 hover:text-indigo-500"
+              className="text-purple-200 hover:text-white transition-colors font-medium"
               onClick={() => setIsLogin(!isLogin)}
             >
-              {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
+              {isLogin 
+                ? "Don't have an account? Sign up" 
+                : "Already have an account? Sign in"
+              }
             </button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   )

@@ -11,8 +11,11 @@ function AppContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-gray-500">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-pink-600 to-blue-600">
+        <div className="glass rounded-3xl p-8 animate-pulse-glow">
+          <div className="spinner mx-auto mb-4"></div>
+          <div className="text-white text-lg font-medium">Loading your experience...</div>
+        </div>
       </div>
     )
   }
@@ -22,11 +25,16 @@ function AppContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-600 to-blue-600 animate-gradient">
       <Header />
-      <main className="py-8 px-4 sm:px-6 lg:px-8">
+      <main className="py-8 px-4 sm:px-6 lg:px-8 animate-slide-in-up">
         <Feed />
       </main>
+      
+      {/* Floating background elements */}
+      <div className="fixed top-20 left-10 w-20 h-20 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full opacity-20 animate-float"></div>
+      <div className="fixed top-40 right-20 w-16 h-16 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-full opacity-20 animate-float" style={{animationDelay: '2s'}}></div>
+      <div className="fixed bottom-20 left-1/4 w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full opacity-20 animate-float" style={{animationDelay: '4s'}}></div>
     </div>
   )
 }
